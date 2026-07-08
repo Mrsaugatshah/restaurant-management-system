@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+    <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+        <div class="mb-6 text-center">
+            <h1 class="text-2xl font-semibold text-slate-800">Welcome back</h1>
+            <p class="mt-2 text-sm text-slate-500">Sign in to your account</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags %}text-green-600{% else %}text-red-600{% endif %} mt-3 text-sm font-medium">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <form class="space-y-4" action="" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="username" class="mb-1 block text-sm font-medium text-slate-700">Username</label>
+                <input id="username" name="username" type="text" placeholder="Enter your username"
+                    class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none ring-0 transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+            </div>
+
+            <div>
+                <label for="password" class="mb-1 block text-sm font-medium text-slate-700">Password</label>
+                <input id="password" name="password" type="password" placeholder="Enter your password"
+                    class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+            </div>
+
+            <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 text-sm text-slate-600">
+                    <input type="checkbox" name="remember" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                    <span>Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit"
+                class="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white transition hover:bg-blue-700">
+                Login
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-slate-500">
+            Don’t have an account?
+            <a href="#" class="font-medium text-blue-600 hover:text-blue-700">Sign up</a>
+        </p>
+    </div>
+</body>
+</html>
