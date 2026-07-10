@@ -122,3 +122,5 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = "accounts.User"
 
+SESSION_COOKIE_AGE=60*60*24*30 #one month in sec
+
