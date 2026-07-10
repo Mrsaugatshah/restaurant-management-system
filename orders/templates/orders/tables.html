@@ -1,1 +1,107 @@
-<h1>here are table</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Table</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">
+                Select Table
+            </h1>
+            <p class="text-sm text-gray-500">
+                Waiter: {{ request.user.username }}
+            </p>
+        </div>
+
+        <div class="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-medium">
+            {{ tables|length }} Tables
+        </div>
+    </header>
+
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="p-4">
+        {% for message in messages %}
+            <div class="bg-green-100 text-green-700 px-4 py-3 rounded-lg">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+    <!-- Table Grid -->
+    <main class="p-6">
+
+        {% if tables %}
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+
+            {% for table in tables %}
+
+            <!-- Table Card -->
+            <a href="#"
+               class="bg-white rounded-xl shadow-md hover:shadow-xl transition p-6 
+                      flex flex-col items-center justify-center 
+                      border-2 border-green-400
+                      active:scale-95">
+
+                <!-- Table Icon -->
+                <div class="w-16 h-16 bg-green-500 text-white rounded-full 
+                            flex items-center justify-center text-2xl font-bold mb-3">
+                    {{ forloop.counter }}
+                </div>
+
+
+                <!-- Table Name -->
+                <h2 class="text-xl font-bold text-gray-800">
+                    {{ table.name }}
+                </h2>
+
+
+                <!-- Status -->
+                <span class="mt-2 px-3 py-1 rounded-full text-sm
+                             bg-green-100 text-green-700">
+                    Available
+                </span>
+
+            </a>
+
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+        <!-- Empty State -->
+        <div class="text-center mt-20">
+            <h2 class="text-xl font-bold text-gray-600">
+                No tables available
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+                Add tables from admin panel.
+            </p>
+        </div>
+
+
+        {% endif %}
+
+    </main>
+
+
+</body>
+</html>
