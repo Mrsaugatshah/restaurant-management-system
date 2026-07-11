@@ -3,7 +3,7 @@ from orders.models import Table
 
 
 class Command(BaseCommand):
-    help = 'helps to populate/seed/config resturent tables'
+    help = 'helps to populate/seed/config tables for  a resturant'
 
     def add_arguments(self, parser):
         parser.add_argument(
