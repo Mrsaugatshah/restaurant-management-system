@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="grid grid-cols-2 gap-6 p-6 h-screen">
+      <!-- LEFT SIDE : MENU -->
+      <div
+        id="menu-items"
+        class="bg-white rounded-lg shadow p-4 overflow-y-auto"
+      >
+        {% for category in categories %}
+
+        <h2 class="text-xl font-bold bg-orange-500 text-white p-3 rounded mb-3">
+          {{ category }}
+        </h2>
+
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          {% for item in category.items.all %}
+
+          <button
+            type="button"
+            class="bg-orange-100 hover:bg-orange-200 border rounded-lg p-4 text-left"
+            data-item-id="{{ item.id }}"
+            data-item-name="{{ item.name }}"
+            data-item-price="{{ item.price }}"
+          >
+            <p class="font-bold text-lg">{{ item.name }}</p>
+
+            <p class="text-green-600 font-semibold">Rs. {{ item.price }}</p>
+          </button>
+
+          {% endfor %}
+        </div>
+
+        {% endfor %}
+      </div>
+
+      <!-- RIGHT SIDE : ORDER -->
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col">
+        <h2 class="text-2xl font-bold mb-4">Current Order</h2>
+
+        <form method="POST" action="">
+          {% csrf_token %}
+
+          <div class="flex-1 overflow-y-auto">
+            <table class="w-full">
+              <thead class="border-b bg-gray-100">
+                <tr>
+                  <th class="text-left p-2">Item</th>
+                  <th class="text-center">Qty</th>
+                  <th class="text-center">Price</th>
+                  <th class="text-center">Total</th>
+                </tr>
+              </thead>
+
+              <tbody id="selected-items"></tbody>
+            </table>
+          </div>
+
+          <input type="hidden" name="order_data" id="order-data" />
+
+          <div class="border-t mt-5 pt-5">
+            <div class="text-2xl font-bold mb-4">
+              Total :
+              <span id="total-price"> Rs. 0 </span>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg text-xl font-bold"
+            >
+              Place Order
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const menu = document.getElementById("menu-items");
+      const selected = document.getElementById("selected-items");
+      const total = document.getElementById("total-price");
+      const hidden = document.getElementById("order-data");
+
+      const order = {};
+
+      menu.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+
+        if (!btn) return;
+
+        const id = btn.dataset.itemId;
+        const name = btn.dataset.itemName;
+        const price = Number(btn.dataset.itemPrice);
+
+        if (order[id]) {
+          order[id].qty++;
+        } else {
+          order[id] = {
+            id: id,
+            name: name,
+            price: price,
+            qty: 1,
+          };
+        }
+
+        renderOrder();
+      });
+
+      function renderOrder() {
+        selected.innerHTML = "";
+
+        let grandTotal = 0;
+
+        for (const id in order) {
+          const item = order[id];
+
+          const totalPrice = item.price * item.qty;
+
+          grandTotal += totalPrice;
+
+          selected.innerHTML += `
+
+            <tr class="border-b">
+
+                <td class="p-2">
+                    ${item.name}
+                </td>
+
+                <td class="text-center">
+
+                    <button
+                        type="button"
+                        onclick="changeQty('${id}',-1)"
+                        class="px-2 bg-red-500 text-white rounded"
+                    >
+                        -
+                    </button>
+
+                    <span class="mx-2">
+                        ${item.qty}
+                    </span>
+
+                    <button
+                        type="button"
+                        onclick="changeQty('${id}',1)"
+                        class="px-2 bg-green-500 text-white rounded"
+                    >
+                        +
+                    </button>
+
+                </td>
+
+                <td class="text-center">
+                    Rs. ${item.price}
+                </td>
+
+                <td class="text-center">
+                    Rs. ${totalPrice}
+                </td>
+
+            </tr>
+
+        `;
+        }
+
+        total.innerText = `Rs. ${grandTotal}`;
+
+        hidden.value = JSON.stringify(Object.values(order));
+      }
+
+      function changeQty(id, value) {
+        order[id].qty += value;
+
+        if (order[id].qty <= 0) {
+          delete order[id];
+        }
+
+        renderOrder();
+      }
+    </script>
+  </body>
+</html>
