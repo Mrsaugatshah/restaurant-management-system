@@ -57,3 +57,11 @@ class OrderItem(models.Model):
     price = models.PositiveBigIntegerField()
     quantity = models.PositiveBigIntegerField(default=1)
     
+class OrderHistory(models.Model):
+    order =models.ForeignKey(Order,on_delete=models.CASCADE,related_name="histories")
+    created_at=models.DateTimeField(auto_now_add=True)
+    status=models.CharField(choices=Order.ORDER_STATUS)
+        
+    def __str__(self):
+        return f"{self.order}->{self.status}"
+    

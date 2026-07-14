@@ -4,6 +4,7 @@ from accounts.models import User
 from .models import Table,Category,Order,OrderItem,MenuItem
 import json
 from django.contrib import messages
+from. import signals
 
 
 @role_required([User.Role.WAITER])
@@ -69,4 +70,4 @@ def menu_views(request, table_id):
             "orders":orders
         }
     )
-    print("table_id from URL:", table_id)
+   
