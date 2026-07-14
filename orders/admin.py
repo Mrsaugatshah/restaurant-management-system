@@ -9,5 +9,9 @@ class TableAdmin(admin.ModelAdmin):
     
 admin.site.register(Category)
 admin.site.register(MenuItem)
-admin.site.register(Order)
+
 admin.site.register(OrderItem)
+
+@admin.register(Order)
+class OrderAmin (admin.ModelAdmin):
+    list_display=["table","status","created_at"]
