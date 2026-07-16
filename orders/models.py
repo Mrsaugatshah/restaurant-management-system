@@ -25,22 +25,28 @@ class MenuItem(models.Model):
         return self.name
 
 class Order(models.Model):
-    class ORDER_STATUS(models.TextChoices):
-        PREPARING='p','preparing'
-        READY='r','Ready'
+    class ORDER_STATUS(models.TextChoices):  
+        PENDING='p','Pending'
+        PARTIALLY_SERVED='PS','Partially_served'
         SERVED='s','Served'
         BILLED='b','Billed'
-        
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     table=models.ForeignKey(Table,on_delete=models.PROTECT,related_name="order")
-    status=models.CharField(max_length=2,choices=ORDER_STATUS,default=ORDER_STATUS.PREPARING)
+    status=models.CharField(max_length=2,choices=ORDER_STATUS,default=ORDER_STATUS.PENDING)
     created_at=models.DateTimeField(auto_now_add=True)
     
     def ___str__(self):
         return f"{self.table}->{self.created_at}"
     
 class OrderItem(models.Model):
-    order = models.ForeignKey(
+    
+     class ITEM_STATUS(models.TextChoices):
+        PREPARING='p','preparing'
+        READY='r','Ready'
+        SERVED='s','Served'
+        
+  
+     order = models.ForeignKey(
         Order,
         on_delete=models.PROTECT,
         related_name="order_items",
@@ -48,14 +54,41 @@ class OrderItem(models.Model):
         blank=True,
     )
 
-    menu_item = models.ForeignKey(
+     menu_item = models.ForeignKey(
         MenuItem,
         on_delete=models.PROTECT,
         related_name="order_items"
     )
 
-    price = models.PositiveBigIntegerField()
-    quantity = models.PositiveBigIntegerField(default=1)
+     price = models.PositiveBigIntegerField()
+     quantity = models.PositiveBigIntegerField(default=1)
+     status= models.CharField(choices=ITEM_STATUS,max_length=2)
+    
+     class ITEM_STATUS(models.TextChoices):
+        PREPARING='p','preparing'
+        READY='r','Ready'
+        SERVED='s','Served'
+        
+  
+     order = models.ForeignKey(
+        Order,
+        on_delete=models.PROTECT,
+        related_name="order_items",
+        null=True,
+        blank=True,
+    )
+
+     menu_item = models.ForeignKey(
+        MenuItem,
+        on_delete=models.PROTECT,
+        related_name="order_items"
+    )
+
+     price = models.PositiveBigIntegerField()
+     quantity = models.PositiveBigIntegerField(default=1)
+     status= models.CharField(choices=ITEM_STATUS,max_length=2,
+     default=ITEM_STATUS.PREPARING)
+    
     
 class OrderHistory(models.Model):
     order =models.ForeignKey(Order,on_delete=models.CASCADE,related_name="histories")
