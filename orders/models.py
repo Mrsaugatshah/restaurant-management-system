@@ -14,12 +14,26 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+class KITCHEN_STATION(models.Model):
+    name=models.CharField(max_length=200)
+    
+    
+    def __str__(self):
+        return self.name
+    
 class MenuItem(models.Model):
+    class PRIORITY_CHOICES(models.TextChoices):
+        HIGH='3','High'
+        MEDIUM='2','Medium'
+        Low='1','Low'
+    
     category=models.ForeignKey(Category,on_delete=models.CASCADE,related_name="items")
     name=models.CharField(max_length=200)
     price=models.PositiveIntegerField()
     description=models.TextField(null=True,blank=True)
-    
+    default_priority=models.CharField(choices=PRIORITY_CHOICES,default=PRIORITY_CHOICES.MEDIUM,max_length=2)
+    est_time=models.PositiveIntegerField(help_text='write estimeated preparation time in minutes',null=True,blank=True)
+    station=models.ForeignKey(KITCHEN_STATION,on_delete=models.SET_NULL,null=True)
     
     def __str__(self):
         return self.name
@@ -35,7 +49,7 @@ class Order(models.Model):
     status=models.CharField(max_length=2,choices=ORDER_STATUS,default=ORDER_STATUS.PENDING)
     created_at=models.DateTimeField(auto_now_add=True)
     
-    def ___str__(self):
+    def __str__(self):
         return f"{self.table}->{self.created_at}"
     
 class OrderItem(models.Model):
@@ -63,6 +77,12 @@ class OrderItem(models.Model):
      price = models.PositiveBigIntegerField()
      quantity = models.PositiveBigIntegerField(default=1)
      status= models.CharField(choices=ITEM_STATUS,max_length=2)
+     priority = models.CharField(
+     max_length=2,
+     choices=MenuItem.PRIORITY_CHOICES,
+     default=MenuItem.PRIORITY_CHOICES.MEDIUM,
+)
+     
     
      class ITEM_STATUS(models.TextChoices):
         PREPARING='p','preparing'
