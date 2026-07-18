@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Table,MenuItem,Category,Order,OrderItem
+from .models import Table,MenuItem,Category,Order,OrderItem,KitchenStation
 from .models import OrderHistory
 # Register your models here.
 @admin.register(Table)
@@ -12,7 +12,7 @@ class MenuItemAdmin(admin.ModelAdmin):
     
     
 admin.site.register(Category)
-
+admin.site.register(KitchenStation)
 admin.site.register(OrderHistory)
 admin.site.register(OrderItem)
 

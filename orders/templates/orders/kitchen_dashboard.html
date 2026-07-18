@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kitchen Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-gray-800">🍽️ Kitchen Dashboard</h1>
+      <p class="text-sm text-gray-500">
+        Kitchen Staff: {{ request.user.username }}
+      </p>
+
+      <a
+        href="{% url 'logout_view_url' %}"
+        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+      >
+        Logout
+      </a>
+    </header>
+
+    <div class="p-6">
+      <h2 class="text-xl font-bold mb-4">Pending Orders</h2>
+
+      {% if orders %} {% for order in orders %}
+
+      <div class="bg-white rounded-lg shadow p-4 mb-4">
+        <div class="flex justify-between">
+          <h3 class="font-bold">Table {{ order.table.name }}</h3>
+
+          <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded">
+            {{ order.get_status_display }}
+          </span>
+        </div>
+
+        <table class="w-full mt-4">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="text-left p-2">Item</th>
+              <th class="text-center">Qty</th>
+              <th class="text-center">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for item in order.order_items.all %}
+            <tr class="border-b">
+              <td class="p-2">{{ item.menu_item.name }}</td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="text-center">{{ item.get_status_display }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% endfor %} {% else %}
+
+      <div class="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+        No pending orders.
+      </div>
+
+      {% endif %}
+    </div>
+  </body>
+</html>

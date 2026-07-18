@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from .decorators import role_required
 from accounts.models import User
-from .models import Table,Category,Order,OrderItem,MenuItem
+from .models import Table,Category,Order,OrderItem,MenuItem,KitchenStation
 import json
 from django.contrib import messages
 from. import signals
@@ -73,8 +73,19 @@ def menu_views(request, table_id):
     
 @role_required([User.Role.KITCHEN])
 def kitchen_dashboard_view(request):
-    print("this is kitchen dashboard")
-   
+    station=KitchenStation.objects.all()
+    print(station)
+    orders = Order.objects.exclude(
+        status=Order.ORDER_STATUS.BILLED
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "orders/kitchen_dashboard.html",
+        {
+            "orders": orders
+        }
+    )
 
 def logout_view(request):
     logout(request)
