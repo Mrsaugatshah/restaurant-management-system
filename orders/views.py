@@ -5,7 +5,7 @@ from .models import Table,Category,Order,OrderItem,MenuItem
 import json
 from django.contrib import messages
 from. import signals
-
+from django.contrib.auth import logout
 
 @role_required([User.Role.WAITER])
 def tables_views(request):
@@ -75,3 +75,7 @@ def menu_views(request, table_id):
 def kitchen_dashboard_view(request):
     print("this is kitchen dashboard")
    
+
+def logout_view(request):
+    logout(request)
+    return redirect("login_view_url")
